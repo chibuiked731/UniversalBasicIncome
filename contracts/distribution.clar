@@ -50,3 +50,25 @@
         (ok true)
     )
 )
+
+;; Verify a participant (only authorized verifiers)
+(define-public (verify-participant (participant principal))
+    (let ((sender tx-sender))
+        (asserts! (is-authorized-verifier sender) ERR_UNAUTHORIZED)
+        (asserts! (default-to false (get registered (map-get? participants participant))) ERR_NOT_REGISTERED)
+        (map-set participants
+            participant
+            (merge (unwrap-panic (map-get? participants participant))
+                  { verified: true })
+        )
+        (map-set verification-status
+            participant
+            {
+                status: true,
+                verifier: sender,
+                timestamp: block-height
+            }
+        )
+        (ok true)
+    )
+)
