@@ -98,3 +98,14 @@
         (ok true)
     )
 )
+
+;; Deposit funds to UBI pool
+(define-public (deposit-to-pool (amount uint))
+    (begin
+        (try! (stx-transfer? amount tx-sender (as-contract tx-sender)))
+        (var-set pool-balance (+ (var-get pool-balance) amount))
+        (ok true)
+    )
+)
+
+;; Read-only functions
