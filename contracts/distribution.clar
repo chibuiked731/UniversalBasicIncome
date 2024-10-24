@@ -134,3 +134,14 @@
 (define-read-only (get-total-participants)
     (var-get total-participants)
 )
+
+;; Private functions
+
+;; Check if principal is authorized verifier
+(define-private (is-authorized-verifier (principal principal))
+    (or
+        (is-eq principal CONTRACT_OWNER)
+        ;; Add additional authorized verifiers here
+        false
+    )
+)
