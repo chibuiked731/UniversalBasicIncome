@@ -109,3 +109,13 @@
 )
 
 ;; Read-only functions
+
+;; Check if user can claim UBI
+(define-read-only (can-claim (user principal) (current-block uint))
+    (let ((participant-data (unwrap! (map-get? participants user) false)))
+        (and
+            (get verified participant-data)
+            (>= current-block (+ (get last-claim participant-data) DISTRIBUTION_CYCLE))
+        )
+    )
+)
