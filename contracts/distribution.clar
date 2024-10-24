@@ -119,3 +119,18 @@
         )
     )
 )
+
+;; Get participant info
+(define-read-only (get-participant-info (user principal))
+    (map-get? participants user)
+)
+
+;; Get pool balance
+(define-read-only (get-pool-balance)
+    (var-get pool-balance)
+)
+
+;; Get total participants
+(define-read-only (get-total-participants)
+    (var-get total-participants)
+)
