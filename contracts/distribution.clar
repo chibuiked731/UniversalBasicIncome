@@ -30,3 +30,23 @@
         total-claimed: uint
     }
 )
+
+;; Public functions
+
+;; Register new participant
+(define-public (register)
+    (let ((sender tx-sender))
+        (asserts! (not (default-to false (get registered (map-get? participants sender)))) ERR_ALREADY_REGISTERED)
+        (map-set participants
+            sender
+            {
+                registered: true,
+                verified: false,
+                last-claim: u0,
+                total-claimed: u0
+            }
+        )
+        (var-set total-participants (+ (var-get total-participants) u1))
+        (ok true)
+    )
+)
