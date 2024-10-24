@@ -72,3 +72,29 @@
         (ok true)
     )
 )
+
+;; Claim UBI distribution
+(define-public (claim-ubi)
+    (let (
+        (sender tx-sender)
+        (participant-data (unwrap! (map-get? participants sender) ERR_NOT_REGISTERED))
+        (current-block block-height)
+    )
+        (asserts! (get verified participant-data) ERR_NOT_VERIFIED)
+        (asserts! (>= (var-get pool-balance) UBI_AMOUNT) ERR_INSUFFICIENT_POOL)
+        (asserts! (can-claim sender current-block) ERR_TOO_EARLY)
+
+        (try! (stx-transfer? UBI_AMOUNT (as-contract tx-sender) sender))
+        (var-set pool-balance (- (var-get pool-balance) UBI_AMOUNT))
+
+        (map-set participants
+            sender
+            (merge participant-data {
+                last-claim: current-block,
+                total-claimed: (+ (get total-claimed participant-data) UBI_AMOUNT)
+            })
+        )
+
+        (ok true)
+    )
+)
